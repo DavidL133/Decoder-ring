@@ -1,25 +1,42 @@
-function substitutionRenderer() {
-  const form = document.querySelector("#substitution");
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+// Please refrain from tampering with the setup code provided here,
+// as the index.html and test files rely on this setup to work properly.
+// Only add code (e.g., helper methods, variables, etc.) within the scope
+// of the anonymous function on line 6
 
-    const input = event.target["substitution-input"].value;
-    const direction = event.target["substitution-options"].value;
-    const alphabet = event.target["substitution-alphabet"].value;
-    const result =
-      direction === "encode"
-        ? substitutionModule.substitution(input, alphabet)
-        : substitutionModule.substitution(input, alphabet, false);
+const substitutionModule = (function () {
+  // you can add any code you want within this function scope
 
-    const alert = document.querySelector("#substitution-alert");
-    if (result) {
-      alert.classList.add("d-none");
-      const output = document.querySelector("#substitution-output");
-      output.innerHTML = result;
-    } else {
-      alert.classList.remove("d-none");
-    }
-  });
-}
+  function substitution(input, alphabet, encode = true) {
+  // your solution code here
+    const sub = {};
+    if(!alphabet || alphabet.length < 26 || alphabet.length > 26) return false;
+    let codeCount = 97;
+    for(let i = 0; i <= 25; i++){
+      if(Object.values(sub).includes(alphabet[i])){
+        return false;
+      }else{
+        sub[String.fromCharCode(codeCount)] = alphabet[i];
+        codeCount++;
+      };
+    };
+  // encoding and decoding
+    const buildEncrypt = input.toLowerCase().split('');
+    {
+      return buildEncrypt.map(letter => {
+        for(let plainLetter in sub){
+          let subLetter = sub[plainLetter];
+          if(letter == ' ') return ' ';
+  // encode
+          if(encode && letter === plainLetter) return subLetter;
+  // decode
+          if(!encode && letter === subLetter) return plainLetter;
+        };
+      }).join('');
+    };
+  };
+  return {
+    substitution,
+  };
+})();
 
-document.addEventListener("DOMContentLoaded", substitutionRenderer);
+module.exports = { substitution: substitutionModule.substitution };
